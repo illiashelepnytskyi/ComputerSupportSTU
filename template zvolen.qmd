@@ -1,0 +1,159 @@
+---
+title: "Task 1 Zvolen"
+author: "Illia Shelepnytskyi"
+date: "2025/10/24"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+## Question 1 Atomic Types
+
+Create the following variables related to your chosen object:
+- 4 numeric values (e.g., population, temperature, size, rating)  
+- 3 integer values (e.g., number of buildings, inhabitants)  
+- 2 logical values (e.g., has_river, is_capital)  
+- 3 character values (e.g., name, region, country)
+
+```{r}
+# Numeric values
+distance_to_bratislava_km <- 170.0     # distance to Bratislava in km
+elevation_m <- 293                     # meters above sea level
+area <- 98.7                           # km²
+avg_density <- 560                     # people per km²
+
+# Integer values
+population <- 42000L
+num_castles <- 2L
+num_schools <- 12L
+
+# Logical values
+has_river <- TRUE
+is_regional_capital <- FALSE
+
+# Character values
+name <- "Zvolen"
+nickname <- "Castle Town"
+region <- "Banskobystrický kraj"
+country <- "Slovakia"
+```
+
+```{r}
+# Numeric vector
+
+numeric_vector <- c(population, area, avg_density, elevation_m)
+numeric_vector
+
+# Sequence vector (5 to 80 step 5)
+
+sequence_vector <- seq(from = 5, to = 80, by = 5)
+sequence_vector
+
+# Logical vector of 10 random TRUE/FALSE
+
+set.seed(123)
+logical_vector <- sample(c(TRUE, FALSE), size = 10, replace = TRUE)
+logical_vector
+```
+
+```{r}
+set.seed(42)
+
+# 3×3 matrix with random integers between -40 and 40
+
+m <- matrix(
+sample(-40:40, size = 9, replace = TRUE),
+nrow = 3, ncol = 3, byrow = TRUE
+)
+
+# Name rows/columns
+
+rownames(m) <- c("Center", "Západ", "Sekier")
+colnames(m) <- c("January", "February", "March")
+
+m
+
+# Row and column means
+
+row_avgs <- rowMeans(m)
+col_avgs <- colMeans(m)
+
+row_avgs
+col_avgs
+```
+
+```{r}
+zvolen_list <- list(
+description = "Zvolen overview: numeric, logical, and text variables with a matrix and computed statistics.",
+
+scalars = list(
+population = population,
+area = area,
+has_river = has_river,
+is_regional_capital = is_regional_capital,
+name = name,
+nickname = nickname,
+region = region,
+country = country
+),
+
+vectors = list(
+numeric = numeric_vector,
+sequence = sequence_vector,
+logical = logical_vector
+),
+
+matrix = m,
+
+matrix_stats = list(
+row_means = row_avgs,
+col_means = col_avgs
+)
+)
+
+str(zvolen_list)
+```
+
+```{r}
+development_level <- factor(
+c("high", "medium", "high", "low", "medium", "high", "medium"),
+levels = c("low", "medium", "high"),
+ordered = TRUE
+)
+
+# Check counts
+
+table(development_level)
+```
+
+```{r}
+zvolen_df <- data.frame(
+district = c("Center", "Západ", "Sekier", "Podborová", "Môťová", "Kráľová"),
+population = c(15000, 9000, 7000, 5000, 6000, 4000),
+has_school = c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE),
+zone = factor(c("commercial", "residential", "residential", "industrial", "residential", "mixed"),
+levels = c("residential", "mixed", "industrial", "commercial")),
+dist_km = c(0.2, 1.1, 2.0, 2.5, 3.2, 1.8)
+)
+
+# Inspect structure and summary
+
+str(zvolen_df)
+summary(zvolen_df)
+
+# Add derived column based on population and school availability
+
+zvolen_df$priority <- with(
+zvolen_df,
+ifelse(population > 8000 & !has_school, "high",
+ifelse(population > 8000, "medium", "low"))
+)
+zvolen_df$priority <- factor(zvolen_df$priority, levels = c("low", "medium", "high"), ordered = TRUE)
+
+# Quick overview
+
+table(zvolen_df$zone)
+table(zvolen_df$priority)
+zvolen_df
+```
