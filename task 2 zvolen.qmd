@@ -1,0 +1,161 @@
+---
+title: "Task 2 Zvolen"
+author: "Illia Shelepnytskyi"
+date: "2025/11/1"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+### 2.1. Querying Vectors
+
+```{r}
+# ---- Setup: ensure Task 1 objects exist ----
+if (!exists("sequence_vector")) sequence_vector <- seq(5, 80, by = 5)
+if (!exists("logical_vector"))  { set.seed(123); logical_vector <- sample(c(TRUE, FALSE), 10, TRUE) }
+if (!exists("m")) {
+  set.seed(42)
+  m <- matrix(sample(-40:40, 9, replace = TRUE), nrow = 3, byrow = TRUE)
+  rownames(m) <- c("Center", "Západ", "Sekier")
+  colnames(m) <- c("January", "February", "March")
+}
+if (!exists("zvolen_df")) {
+  zvolen_df <- data.frame(
+    district = c("Center", "Západ", "Sekier", "Podborová", "Môťová", "Kráľová"),
+    population = c(15000, 9000, 7000, 5000, 6000, 4000),
+    has_school = c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE),
+    zone = factor(c("commercial", "residential", "residential", "industrial", "residential", "mixed"),
+                  levels = c("residential", "mixed", "industrial", "commercial")),
+    dist_km = c(0.2, 1.1, 2.0, 2.5, 3.2, 1.8)
+  )
+}
+```
+
+2.1.1. From your Sequence vector (the one with all your numbers):
+# ---- 2.1.1 Sequence vector ----
+
+```{r}
+# Select and print the 3rd element
+
+sequence_vector[3]
+
+# Select elements 2 through 5
+
+sequence_vector[2:5]
+
+# Select all values greater than 20
+
+sequence_vector[sequence_vector > 20]
+```
+
+2.1.2. From your Logical vector:
+
+# ---- 2.1.2 Logical vector ----
+
+```{r}
+# Select only the TRUE values
+
+logical_vector[logical_vector]
+
+# Indices of TRUE values
+
+which(logical_vector)
+```
+
+### 2.2. Querying Your "Universe" List
+
+```{r}
+if (!exists("zvolen_list")) {
+zvolen_list <- list(
+description = "Zvolen overview: numeric, logical, and text variables with a matrix and computed statistics.",
+matrix = m,
+vectors = list(
+sequence = sequence_vector,
+logical = logical_vector
+)
+)
+}
+
+# Access and print description
+
+zvolen_list$description
+
+# Access and print 3x3 matrix
+
+zvolen_list[["matrix"]]
+
+# Access and print 2nd element of inner sequence vector
+
+zvolen_list[["vectors"]][["sequence"]][2]
+```
+
+### 2.3. Investigating Your Data Frame
+
+```{r}
+# First 3 rows
+
+head(zvolen_df, 3)
+
+# Value from 4th row, 1st column
+
+zvolen_df[4, 1]
+
+# Logical column as vector
+
+zvolen_df$has_school
+
+# Districts with population greater than 8000
+
+df_subset <- zvolen_df[zvolen_df$population > 8000, ]
+df_subset
+
+# Select rows for two specific zones
+
+df_subset_2 <- zvolen_df[zvolen_df$zone %in% c("residential", "industrial"), ]
+df_subset_2
+```
+
+### 2.4. Handling "Corrupted" Data (`NA`)
+
+```{r}
+df_corrupted <- zvolen_df
+
+# Introduce 3 NAs
+
+df_corrupted[2, "dist_km"]    <- NA
+df_corrupted[5, "population"] <- NA
+df_corrupted[3, "has_school"] <- NA
+
+# Total number of NAs
+
+sum(is.na(df_corrupted))
+
+# Number of NAs per column
+
+colSums(is.na(df_corrupted))
+
+# Mean population with and without removing NAs
+
+mean(df_corrupted$population)                # returns NA
+mean(df_corrupted$population, na.rm = TRUE)  # ignores NA
+
+# Clean dataset with complete cases only
+
+df_clean <- na.omit(df_corrupted)
+df_clean
+```
+
+### 2.5. Bonus Challenge: `which()`
+
+```{r}
+# Index of district with max population
+
+idx_max_pop <- which.max(zvolen_df$population)
+zvolen_df[idx_max_pop, ]
+
+# Index of district with min distance
+
+idx_min_dist <- which.min(zvolen_df$dist_km)
+zvolen_df[idx_min_dist, ]
+```
