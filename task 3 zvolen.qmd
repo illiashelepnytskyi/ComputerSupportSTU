@@ -1,0 +1,130 @@
+---
+title: "Task 3 Zvolen"
+author: "Illia Shelepnytskyi"
+date: "2025/11/23"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+###Task 3: Expanding Your Universe
+
+Your “mini-universe” in Tasks 1 & 2 was a simulation. Now, it’s time to connect it to the real world.
+
+Your mission is to find a real dataset that expands on your theme, import it into R, and explore it using the dplyr package.
+
+3.1. The Quest: Find Your Data
+Find one simple, real-world dataset that fits your theme.
+
+Where to look: Kaggle, TidyTuesday, data.gov, or other public data portals.
+
+Format: Any format you are able to read. For simplicity it is proposed to use textual (csv, txt) or Excel format.
+
+Requirements:
+
+At least 50 rows.
+
+At least 4 columns.
+
+A mix of numeric and character/factor data.
+
+Action:
+
+Download the data file and place it in your R project directory.
+
+In your task file add a line with the link to the data source (e.g., Data from: https://…).
+
+### 3.2. The Import: Load Your Data
+
+
+Install tidyverse: If you haven’t, run install.packages("tidyverse") in your console (just once).
+
+Load libraries: At the top of your script, add library(dplyr) and library(readr) (library(readxl) in case of Excel file format).
+
+Read the data: Use read_csv() (or read_excel()) to load your dataset into a new data frame.
+
+```{r}
+# Load libraries
+library(dplyr)
+library(readr)
+
+# Load data
+zvolen_data <- read_csv("zvolen_df.csv")
+
+# Quick inspection
+glimpse(zvolen_data)
+head(zvolen_data)
+summary(zvolen_data)
+
+```
+
+
+
+###3.3. The Interrogation: Explore with dplyr
+This is the core of the task. Your goal is to ask and answer 5 interesting questions about your new dataset.
+
+You must write the question in plain English (as a comment), followed by the dplyr code that answers it.
+
+You must use each of the following dplyr “verbs” at least once:
+
+select() - To pick specific columns.
+
+filter() - To subset rows based on a condition.
+
+arrange() - To sort your results (e.g., with desc()).
+
+mutate() - To create a new column.
+
+group_by() and summarise() - To get summary statistics (like mean(), n(), max(), etc.).
+
+Your 5 Questions (example):
+
+
+**Question 1**: Top 5 streets by population?
+
+```{r}
+zvolen_data %>%
+  select(district, street, population = pop) %>%
+  arrange(desc(population)) %>%
+  head(5)
+```
+
+
+**Question 2**: Average population by zone?
+
+```{r}
+zvolen_data %>%
+  group_by(zone) %>%
+  summarise(avg_population = mean(pop, na.rm = TRUE), n = n()) %>%
+  arrange(desc(avg_population))
+```
+
+
+**Question 3**: Count of streets with a playground?
+
+```{r}
+zvolen_data %>%
+  group_by(has_playground) %>%
+  summarise(count = n())
+```
+
+
+**Question 4**: Population density of each street?
+
+```{r}
+zvolen_data %>%
+  filter(!is.na(pop) & !is.na(area_km2)) %>%
+  mutate(density = pop / area_km2) %>%
+  select(district, street, density) %>%
+  arrange(desc(density))
+```
+
+
+**Question 5**: Streets in the commercial zone?
+
+```{r}
+zvolen_data %>%
+  filter(zone == "commercial") %>%
+  select(district, street, pop, zone)
+```
