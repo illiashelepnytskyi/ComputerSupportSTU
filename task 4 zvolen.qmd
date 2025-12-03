@@ -35,7 +35,7 @@ welcome_to_my_universe <- function(your_name) {
   cat("--------------------------------------\n")
 }
 
-# Виклик функції:
+# Call the function:
 welcome_to_my_universe("Illia Shelepnytskyi")
 
 ```
@@ -159,4 +159,5 @@ generate_report <- function(data, zone_name) {
 # Call the reporting function for two different zones:
 generate_report(zvolen_data, "residential")
 generate_report(zvolen_data, "commercial")
+
 ```
