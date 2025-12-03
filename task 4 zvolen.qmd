@@ -1,0 +1,162 @@
+---
+title: "Task 4 Zvolen"
+author: "Illia Shelepnytskyi"
+date: "2025/12/1"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+## Task 4. Building a "Toolkit" for Your Universe (Functions)
+In Task 3, you performed a "one-off" analysis of your new dataset. In the real world, you'll want to run that analysis again and again.
+
+The best way to do this is by capturing your code inside **functions**. A function is a reusable "tool" that you build to perform a specific job.
+
+Your mission is to build a "toolkit" of functions that can analyse the dataset you found in Task 3.
+
+**Important:** You must use the **same dataset** and theme you used in Task 3.
+
+
+### 4.1. The "Greeting" Function (A Simple Start)
+Let's start with the basics. Write a simple function that prints a welcome message for your "universe".
+
+1. **Write the function:** It should take at least one argument (e.g., `your_name` or `universe_name`).
+
+2. **Inside the function:** Use `print()` or `cat()` to display a message.
+
+3. **Call the function:** After you define the function, you must call it to see the result.
+
+```{r}
+welcome_to_my_universe <- function(your_name) {
+  cat("--------------------------------------\n")
+  cat(" Welcome to the Zvolen Analysis Toolkit\n")
+  cat(" Report prepared by:", your_name, "\n")
+  cat("--------------------------------------\n")
+}
+
+# Виклик функції:
+welcome_to_my_universe("Illia Shelepnytskyi")
+
+```
+
+### 4.2. The "Loading" Function (A Good Practice)
+In Task 3, you wrote code to load and inspect your data. Let's turn that into a function. This is a very common and useful practice.
+
+1. **Write the function:** Name it `load_and_inspect`. It should take one argument: `file_path`.
+
+2. **Inside the function:**
+
+  - Load the `readr` and `dplyr` libraries.
+
+  - Use `read_csv(file_path)` to load the data.
+
+  - Print a message (e.g., "Data loaded successfully.").
+
+  - Print the `glimpse()` of the data.
+
+  - Print the `head()` of the data.
+
+  - **Return** the data frame (use the `return()` command).
+
+3. **Call the function:**
+
+```{r}
+# Load the libraries
+library(readr)
+library(dplyr)
+
+# Define the function
+load_and_inspect <- function(file_path) {
+  
+  # Load the data
+  data <- read_csv(file_path)
+  
+  # Print messages for the user
+  cat("--------------------------------------------------\n")
+  cat(" Data loaded successfully from:", file_path, "\n")
+  cat("--------------------------------------------------\n\n")
+  
+  cat("Glimpse of the dataset:\n")
+  print(glimpse(data))
+  
+  cat("\nFirst 6 rows of the dataset:\n")
+  print(head(data))
+  
+  # Return the loaded dataframe
+  return(data)
+}
+
+# Call the function
+zvolen_data <- load_and_inspect("zvolen_df.csv")
+
+```
+
+
+### 4.3. The "Query" Function (The Core of the Task)
+
+```{r}
+# Function: calculate population density for a selected district
+
+population_density_in_district <- function(data, district_name) {
+  
+  result <- data %>%
+    filter(district == district_name) %>% 
+    filter(!is.na(pop) & !is.na(area_km2)) %>% 
+    mutate(density = pop / area_km2) %>% 
+    arrange(desc(density)) %>%
+    select(district, street, density)
+  
+  return(result)
+}
+
+# Call the function
+population_density_in_district(zvolen_data, "Zvolen-sever")
+```
+
+### 4.4. The "Reporting" Function
+
+Let's combine everything. Write a single function that calculates several key statistics for a specific **group** or **category** in your data.
+
+1. **Write the function:** Name it `generate_report`. It should take `data` and a `category_name` as arguments (e.g., a specific city, planet type, or region).
+
+2. **Inside the function**:
+
+    - `filter()` your data for only the `category_name` provided.
+
+    - Calculate 3-4 interesting summary statistics (e.g., `mean()`, `max()`, `min()`, `n()`).
+
+    - Use `cat()` to print a nicely formatted "report" to the console.
+
+**Example:**
+
+
+```{r}
+generate_report <- function(data, zone_name) {
+  
+  zone_data <- data %>% 
+    filter(zone == zone_name)
+  
+  # Calculate summary statistics
+  count_records <- nrow(zone_data)
+  avg_pop <- mean(zone_data$pop, na.rm = TRUE)
+  max_pop <- max(zone_data$pop, na.rm = TRUE)
+  avg_area <- mean(zone_data$area_km2, na.rm = TRUE)
+  avg_density <- mean(zone_data$pop / zone_data$area_km2, na.rm = TRUE)
+  
+  # Print formatted report
+  cat("\n----------------------------------------------\n")
+  cat("      ZONE REPORT:", zone_name, "\n")
+  cat("----------------------------------------------\n")
+  cat("Number of Streets:", count_records, "\n")
+  cat("Average Population:", round(avg_pop, 2), "\n")
+  cat("Maximum Population:", max_pop, "\n")
+  cat("Average Area (km²):", round(avg_area, 3), "\n")
+  cat("Average Population Density:", round(avg_density, 2), "\n")
+  cat("----------------------------------------------\n\n")
+}
+
+# Call the reporting function for two different zones:
+generate_report(zvolen_data, "residential")
+generate_report(zvolen_data, "commercial")
+```
