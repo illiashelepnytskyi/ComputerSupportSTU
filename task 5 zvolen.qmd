@@ -1,0 +1,98 @@
+---
+title: "Task 5 Zvolen"
+author: "Illia Shelepnytskyi"
+date: "2025/12/08"
+format:
+  html:
+    embed-resources: true
+editor: source
+---
+
+```{r setup, include=FALSE}
+# Load required library
+library(ggplot2)
+
+# Load your dataset (make sure zvolen.csv is in the project folder)
+zvolen_df <- read.csv("zvolen.csv")
+
+# Ensure district is a factor for faceting
+zvolen_df$district <- as.factor(zvolen_df$district)
+```
+
+## Task 5. Visualising Zvolen (Base R & ggplot2)
+
+The goal is to create four visualizations for the dataset `zvolen_df`.
+
+---
+
+### 5.1. Quick Sketch (Base R Histogram)
+
+Distribution of population across streets in Zvolen.
+
+```{r histogram, echo=TRUE}
+hist(zvolen_df$pop,
+     main = "Distribution of Street Population in Zvolen",
+     xlab = "Population (number of residents)",
+     col = "lightblue",
+     border = "white")
+```
+
+---
+
+### 5.2. Relationship Map (ggplot2 Scatter Plot)
+
+Relationship between street area and population.
+
+```{r scatter, echo=TRUE}
+ggplot(data = zvolen_df, aes(x = area_km2, y = pop)) +
+  geom_point(alpha = 0.7, size = 3, colour = "darkblue") +
+  geom_smooth() +
+  labs(title = "Relationship between Street Area and Population – Zvolen",
+       x = "Street Area (km²)",
+       y = "Population") +
+  theme_minimal()
+```
+
+---
+
+### 5.3. Comparison (ggplot2 Boxplot)
+
+Compare population by zone type (residential, commercial, industrial, mixed).
+
+```{r boxplot, echo=TRUE}
+ggplot(data = zvolen_df, aes(x = zone, y = pop, fill = zone)) +
+  geom_boxplot() +
+  labs(title = "Population Comparison by Zone in Zvolen",
+       x = "Zone Type",
+       y = "Population") +
+  theme_light() +
+  theme(legend.position = "none")
+```
+
+---
+
+### 5.4. Deep Dive (Faceting)
+
+Histogram of street areas faceted by district.
+
+```{r facet, echo=TRUE}
+ggplot(data = zvolen_df, aes(x = area_km2)) +
+  geom_histogram(bins = 12, fill = "coral", color = "black") +
+  facet_wrap(~ district) +
+  labs(title = "Distribution of Street Areas by District – Zvolen",
+       x = "Street Area (km²)",
+       y = "Number of Streets")
+```
+
+---
+
+### 5.5. Exporting (Saving Your Work)
+
+If you want to save a separate PNG file:
+
+```{r saveplot, echo=TRUE, eval=FALSE}
+# Save the last plot as a PNG file
+ggsave("zvolen_area_vs_pop.png", width = 8, height = 6)
+```
+
+> **Note:** For HTML output, `ggsave()` is optional because plots are embedded automatically.
